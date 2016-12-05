@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Hello World!</title>
 		<style>
 		#toggleFeedButton {
 			display: block;
@@ -28,12 +27,9 @@
        socket.on('event', function(data){});
        socket.on('disconnect', function(){});
        </script>
+
 		<script>
 		(function(){
-			var Kinect2 = require('../lib/kinect2');
-			var kinect = new Kinect2();
- 
-
 
 			var FACTOR = 400;
 			var SCREEN_WIDTH = window.innerWidth;
@@ -57,17 +53,17 @@
 
              
  				var light = new THREE.PointLight( 0xff0000, 2, 500 );
-	            var sphereSize = 10;
-	            var pointLightHelper = new THREE.PointLightHelper( light, sphereSize );
+	            //var sphereSize = 10;
+	            //var pointLightHelper = new THREE.PointLightHelper( light, sphereSize );
 	            //pointLightHelper.castShadow = true;
 
                 var light1 = new THREE.PointLight( 0x0f0000, 2, 1000 );
                 var light2 = new THREE.PointLight( 0x00ff00, 2, 1000 );
-                var light3 = new THREE.PointLight( 0x00f000, 2, 1000 );
-                var light4 = new THREE.PointLight( 0x0000ff, 2, 1000 );
+                // var light3 = new THREE.PointLight( 0x00f000, 2, 1000 );
+                // var light4 = new THREE.PointLight( 0x0000ff, 2, 1000 );
 
-            init();
-			function init() {
+               init();
+			   function init() {
 
 
 				renderer = new THREE.WebGLRenderer( {
@@ -77,12 +73,9 @@
 
 
 				scene = new THREE.Scene();
-
 				camera = new THREE.PerspectiveCamera( 50, 0.5 * aspect, 1, 10000 );
 				camera.position.z = 2500;
-
 				cameraPerspective = new THREE.PerspectiveCamera( 50, 0.5 * aspect, 150, 1000 );
-
 				cameraPerspectiveHelper = new THREE.CameraHelper( cameraPerspective );
 				
 				// scene.add( cameraPerspectiveHelper );
@@ -92,7 +85,7 @@
 				controls = new THREE.TrackballControls( camera, renderer.domElement );
             
 
-				createGrid();
+				//createGrid();
 				createBoneHierarchy();
 				createBoneAndChildren(rootBone);
 
@@ -100,17 +93,8 @@
 				onWindowResize();
 				render();
 
-				if(kinect.open()){
-					kinect.on('bodyFrame', processBodyFrame);
-					kinect.openBodyReader();
-				}
 			}
 
-			function createGrid() {
-
-				
-				
-      }
 
 			function createBoneHierarchy() {
 				var lengthFromSpineBaseToSpineMid = FACTOR * 0.2;
@@ -128,38 +112,31 @@
 				var lengthFromHandToThumb = FACTOR * 0.05;
 				var lengthFromHandToTip = FACTOR * 0.05;
 
-				rootBone = { index: Kinect2.JointType.spineBase, length: 1 };
-
-				console.log(Kinect2.JointType.spineBase);
-				console.log( Kinect2.JointType.spineMid);
-				console.log( Kinect2.JointType.neck);
-				console.log( Kinect2.JointType.head);
-				console.log( Kinect2.JointType.shoulderLeft);
-
-				var spineMidBone = { index: Kinect2.JointType.spineMid, length: 1 };
-				var neckBone = { index: Kinect2.JointType.neck, length: 1 };
-				var headBone = { index: Kinect2.JointType.head, length: 1 };
-				var shoulderLeftBone = { index: Kinect2.JointType.shoulderLeft, length: 1 };
-				var elbowLeftBone = { index: Kinect2.JointType.elbowLeft, length: 1 };
-				var wristLeftBone = { index: Kinect2.JointType.wristLeft, length: 1 };
-				var handLeftBone = { index: Kinect2.JointType.handLeft, length: 1 };
-				var shoulderRightBone = { index: Kinect2.JointType.shoulderRight, length: 1 };
-				var elbowRightBone = { index: Kinect2.JointType.elbowRight, length: 1 };
-				var wristRightBone = { index: Kinect2.JointType.wristRight, length: 1 };
-				var handRightBone = { index: Kinect2.JointType.handRight, length: 1 };
-				var hipLeftBone = { index: Kinect2.JointType.hipLeft, length: 1 };
-				var kneeLeftBone = { index: Kinect2.JointType.kneeLeft, length: 1 };
-				var ankleLeftBone = { index: Kinect2.JointType.ankleLeft, length: 1 };
-				var footLeftBone = { index: Kinect2.JointType.footLeft, length: 1 };
-				var hipRightBone = { index: Kinect2.JointType.hipRight, length: 1 };
-				var kneeRightBone = { index: Kinect2.JointType.kneeRight, length: 1 };
-				var ankleRightBone = { index: Kinect2.JointType.ankleRight, length: 1 };
-				var footRightBone = { index: Kinect2.JointType.footRight, length: 1 };
-				var spineShoulderBone = { index: Kinect2.JointType.spineShoulder, length: 1 };
-				var handTipLeftBone = { index: Kinect2.JointType.handTipLeft, length: 1 };
-				var thumbLeftBone = { index: Kinect2.JointType.thumbLeft, length: 1 };
-				var handTipRightBone = { index: Kinect2.JointType.handTipRight, length: 1 };
-				var thumbRightBone = { index: Kinect2.JointType.thumbRight, length: 1 };
+				rootBone = { index: 0, length: 1 };
+				var spineMidBone = { index: 1, length: 1 };
+				var neckBone = { index: 2, length: 1 };
+				var headBone = { index: 3, length: 1 };
+				var shoulderLeftBone = { index: 4, length: 1 };
+				var elbowLeftBone = { index: 5, length: 1 };
+				var wristLeftBone = { index: 6, length: 1 };
+				var handLeftBone = { index: 7, length: 1 };
+				var shoulderRightBone = { index: 8, length: 1 };
+				var elbowRightBone = { index: 9, length: 1 };
+				var wristRightBone = { index: 10, length: 1 };
+				var handRightBone = { index: 11, length: 1 };
+				var hipLeftBone = { index: 12, length: 1 };
+				var kneeLeftBone = { index: 13, length: 1 };
+				var ankleLeftBone = { index: 14, length: 1 };
+				var footLeftBone = { index: 15, length: 1 };
+				var hipRightBone = { index: 16, length: 1 };
+				var kneeRightBone = { index: 17, length: 1 };
+				var ankleRightBone = { index: 18, length: 1 };
+				var footRightBone = { index: 19, length: 1 };
+				var spineShoulderBone = { index: 20, length: 1 };
+				var handTipLeftBone = { index: 21, length: 1 };
+				var thumbLeftBone = { index: 22, length: 1 };
+				var handTipRightBone = { index: 23, length: 1 };
+				var thumbRightBone = { index: 24, length: 1 };
 
 				addChildBone(rootBone, hipRightBone, lengthFromSpineMidToHipRight);
 				addChildBone(hipRightBone, kneeRightBone, lengthFromHipRightToKneeRight);
@@ -223,30 +200,39 @@
 				}
 			}
 
-			var frameNr = 0;
+			//var frameNr = 0;
 
-			function processBodyFrame(bodyFrame) {
-				var index = 0;
-				bodyFrame.bodies.forEach(function(body){
-					if(body.tracked) {
-						//traverse hierarchy
-						socket.emit('bone',body);
-						applyBoneTransformations(body, rootBone);
-					}
-				});
-			}
-
-
-			var geometry1 = new THREE.BoxGeometry( 200, 200, 40 );
-			var object = new THREE.Mesh( geometry1, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
-
-			var geometry2 = new THREE.BoxGeometry( 500, 500, 40 );
-			var object2 = new THREE.Mesh( geometry2, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+			// function processBodyFrame(bodyFrame) {
+			// 	var index = 0;
+			// 	bodyFrame.bodies.forEach(function(body){
+			// 		if(body.tracked) {
+			// 			//traverse hierarchy
+			// 			socket.emit('bone',body.joints);
+			// 			applyBoneTransformations(body, rootBone);
+			// 		}
+			// 	});
+			// }
 
 
-		var geometry = new THREE.BoxGeometry( 5000, 20, 5000 );
-		material = new THREE.MeshLambertMaterial();
-		var mesh = new THREE.Mesh( geometry, material );
+			socket.on('bone', function(body) {
+                if(body.tracked) {
+				 applyBoneTransformations(body, rootBone);
+				}
+
+            });
+
+
+
+			// var geometry1 = new THREE.BoxGeometry( 200, 200, 40 );
+			// var object = new THREE.Mesh( geometry1, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+
+			// var geometry2 = new THREE.BoxGeometry( 500, 500, 40 );
+			// var object2 = new THREE.Mesh( geometry2, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+
+
+		    // var geometry = new THREE.BoxGeometry( 5000, 20, 5000 );
+		    // material = new THREE.MeshLambertMaterial();
+		    // var mesh = new THREE.Mesh( geometry, material );
 
 			function applyBoneTransformations(body, bone) {
 				var joint = body.joints[bone.index];
@@ -254,13 +240,10 @@
 				var translation,
 					rotation = new THREE.Quaternion(joint.orientationX, joint.orientationY, joint.orientationZ, joint.orientationW),
 					scale = new THREE.Vector3(1, 1, 1);
-                //console.log(body.joints[bone.index]);
-                //console.log(body);
 				if(parentBone) {
 					translation = new THREE.Vector4(0, parentBone.length, 0, 1);
 					translation.applyMatrix4(parentBone.mesh.matrix);
 				} else {
-					//we are a root bone - position is absolute
 					translation = new THREE.Vector3(joint.cameraX * FACTOR, joint.cameraY * FACTOR, joint.cameraZ * FACTOR);
 
 				}
@@ -277,15 +260,15 @@
                 scene.add( light2 );
 
 
-                light3.position.x =body.joints[13].cameraX * FACTOR+00;
-				light3.position.y =body.joints[13].cameraY * FACTOR+100;
-				light3.position.z =body.joints[13].cameraZ * FACTOR;
-                scene.add( light3 );
+    //             light3.position.x =body.joints[13].cameraX * FACTOR+00;
+				// light3.position.y =body.joints[13].cameraY * FACTOR+100;
+				// light3.position.z =body.joints[13].cameraZ * FACTOR;
+    //             scene.add( light3 );
 
-                light4.position.x =body.joints[16].cameraX * FACTOR+100;
-				light4.position.y =body.joints[16].cameraY * FACTOR;
-				light4.position.z =body.joints[16].cameraZ * FACTOR;
-                scene.add( light4 );
+    //             light4.position.x =body.joints[16].cameraX * FACTOR+100;
+				// light4.position.y =body.joints[16].cameraY * FACTOR;
+				// light4.position.z =body.joints[16].cameraZ * FACTOR;
+    //             scene.add( light4 );
 
 
                 light.position.x =0;
@@ -296,18 +279,18 @@
 
 				bone.mesh.matrix.compose(translation, rotation, scale);
 
-			    object.position.x = joint.cameraX * FACTOR;
-				object.position.y = joint.cameraY * FACTOR;
-				object.position.z = joint.cameraZ * FACTOR;
-				//object.castShadow = true;
-				scene.add( object );
+			    // object.position.x = joint.cameraX * FACTOR;
+				// object.position.y = joint.cameraY * FACTOR;
+				// object.position.z = joint.cameraZ * FACTOR;
+				// //object.castShadow = true;
+				// scene.add( object );
 
-				//object2.castShadow = true;
-				object2.position.set( 0, 0, 300 );
-				scene.add( object2 );
+				// //object2.castShadow = true;
+				// object2.position.set( 0, 0, 300 );
+				// scene.add( object2 );
 			
 
-				mesh.position.set( 0, -300, 0 );
+				//mesh.position.set( 0, -300, 0 );
 				// scene.add( mesh );
 
 
