@@ -52,9 +52,9 @@
 			var NEAR = 1;
 			var FAR = 500;
 
-			var camera, scene, renderer;
+			var mainCamera, scene, renderer;
 
-			var rightProjector, leftProjector, upProjector;
+			var rightProjector, leftProjector, upProjector, cameraCopy, currCam;
 
 			var cameraControls;
 
@@ -63,8 +63,6 @@
 			var sphereGroup, smallSphere;
 
 			function init() {
-				container= document.createElement('div');
-				document.body.appendChild( container );
 
 				// renderer
 				renderer = new THREE.WebGLRenderer();
@@ -81,27 +79,15 @@
 				camera.position.set( 200, 100, 200 );
 
 				// projectors
-				var rightProjector = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-				// rightProjector.position.x = 10;
-				// rightProjector.position.y = 10;
+				rightProjector = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+				rightProjector.position.set(10,50,100);
 
-				var leftProjector  = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-				// leftProjector.position.x = 50;
-				// leftProjector.position.y = 50;
 
-				var upProjector  = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-				// upProjector.position.x = -50;
-				// upProjector.position.y = -50;
+				leftProjector  = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+				leftProjector.position.set(200,100,200);
 
-				var cameraCopy = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-				cameraCopy.position.copy(camera.position);
-				cameraCopy.rotation.copy(camera.position);
-				camera.updateProjectionMatrix();
-				currCam = "cam1";
-
-				rightProjector.position.set( 200, 100, 200 );
-				leftProjector.position.set( 200, 100, 200 );
-				upProjector.position.set( 200, 100, 200 );
+				upProjector  = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+				upProjector.position.set(100,10,10);
 
 				cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
 				cameraControls.target.set( 0, 40, 0);
@@ -109,19 +95,23 @@
 				// cameraControls.minDistance = 10;
 				cameraControls.update();
 
-				var container = document.getElementById( 'container' );
-				container.appendChild( renderer.domElement );
+				controls = new THREE.OrbitControls(camera);
+				controls.addEventListener( 'change', camUpdate );
 
+				container= document.createElement('div');
+				document.body.appendChild( container );
+				container.appendChild (renderer.domElement);
 			}
 
 			function fillScene() {
 
-				var planeGeo = new THREE.PlaneGeometry( 200.1, 200.1 );
+				var planeGeo = new THREE.PlaneGeometry( 200.1, 130.1 );
+				var mirrorGeo = new THREE.PlaneGeometry(200.1,200.1);
 
 				// MIRROR planes
 				groundMirror = new THREE.Mirror( renderer, camera, { clipBias: 0.003, textureWidth: WIDTH, textureHeight: HEIGHT, color: 0x777777 } );
 
-				var mirrorMesh = new THREE.Mesh( planeGeo, groundMirror.material );
+				var mirrorMesh = new THREE.Mesh( mirrorGeo, groundMirror.material );
 				mirrorMesh.add( groundMirror );
 				mirrorMesh.rotateX( - Math.PI / 2 );
 				scene.add( mirrorMesh );
@@ -131,14 +121,14 @@
 
 				var rightMirrorMesh = new THREE.Mesh( new THREE.PlaneGeometry( 50, 50 ), rightMirror.material );
 				rightMirrorMesh.add( rightMirror );
-				rightMirrorMesh.position.y = 25;
+				rightMirrorMesh.position.y = 0;
 				rightMirrorMesh.position.z = -99;
 				scene.add( rightMirrorMesh );
 
 				var leftMirrorMesh = new THREE.Mesh( new THREE.PlaneGeometry( 50, 50 ), leftMirror.material );
 				leftMirrorMesh.add( leftMirror );
 				leftMirrorMesh.position.x = -99;
-				leftMirrorMesh.position.y = 25;
+				leftMirrorMesh.position.y = 0;
 				leftMirrorMesh.rotateY(  Math.PI / 2 );
 				scene.add( leftMirrorMesh );
 
@@ -169,12 +159,12 @@
 				// walls
 				var planeLeft = new THREE.Mesh( planeGeo, new THREE.MeshPhongMaterial( { color: 0xffffff } ) );
 				planeLeft.position.z = -100;
-				planeLeft.position.y = 100;
+				planeLeft.position.y = 65;
 				scene.add( planeLeft );
 
 				var planeRight = new THREE.Mesh( planeGeo, new THREE.MeshPhongMaterial( { color: 0xffffff } ) );
 				planeRight.position.x = -100;
-				planeRight.position.y = 100;
+				planeRight.position.y = 65;
 				planeRight.rotateY( Math.PI / 2 );
 				scene.add( planeRight );
 
@@ -225,30 +215,30 @@
 				smallSphere.rotation.y = ( Math.PI / 2 ) - timer * 0.1;
 				smallSphere.rotation.z = timer * 0.8;
 
-				// cameraControls.update();
+				cameraControls.update();
 
 				render();
 			}
 
 			function camUpdate(){
 
-			if(currCam == "rightProjector")
-			{
-				rightProjector.position.copy(camera.position);
-				rightProjector.rotation.copy(camera.rotation);
+				if(currCam == "rightPro")
+				{
+					rightProjector.position.copy(camera.position);
+					rightProjector.rotation.copy(camera.rotation);
 
-			} else if (currCam == "leftProjector"){
+				} else if (currCam == "leftPro"){
 
-				leftProjector.position.copy(camera.position);
-				leftProjector.rotation.copy(camera.rotation);
+					leftProjector.position.copy(camera.position);
+					leftProjector.rotation.copy(camera.rotation);
 
-			}
-			else {
+				}
+				else if (currCam == "upPro"){
 
-			 upProjector.position.copy(camera.position);
-			 upProjector.rotation.copy(camera.rotation);
+				 upProjector.position.copy(camera.position);
+				 upProjector.rotation.copy(camera.rotation);
 
-		 }
+			 }
 		}
 
 
@@ -260,7 +250,7 @@
 			camera.updateProjectionMatrix();
 			controls = new THREE.OrbitControls(camera);
 
-			currCam = "rightProjector";
+			currCam = "rightPro";
 
 		}
 
@@ -272,7 +262,7 @@
 			camera.updateProjectionMatrix();
 			controls = new THREE.OrbitControls(camera);
 
-			currCam = "leftProjector";
+			currCam = "leftPro";
 
 		}
 
@@ -284,7 +274,7 @@
 			camera.updateProjectionMatrix();
 			controls = new THREE.OrbitControls(camera);
 
-			currCam = "upProjector";
+			currCam = "upPro";
 
 		}
 			init();
@@ -299,6 +289,8 @@
 			<a href="#" onclick="setPro3();return false;"> Camera 3</a>
 			<br>
 		</div>
+
+		<div
 
 	</body>
 </html>
