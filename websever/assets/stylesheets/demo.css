@@ -1,0 +1,66 @@
+b,
+strong {
+  font-weight: bold;
+}
+
+body {
+  font: 20px / 1.5 "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif;
+}
+
+p,
+body {
+  background: white;
+  color: #333;
+  text-align: left;
+}
+
+
+input[type="text"] {
+  
+  font: 20px / 1.5 "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif;
+  font-weight: bold; 
+  background: #eee;
+  border: 0; 
+  width:60%;
+  padding-top: 20px; 
+  padding-bottom: 20px; 
+  bottom: 25px; 
+  position:fixed;
+}
+input[type="submit"] { 
+  
+  font: 20px / 1.5 "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif;
+  right:10%;
+  border:0; 
+  width:20%;
+  padding-top: 20px; 
+  padding-bottom: 20px; 
+  bottom: 25px; 
+  position:fixed;
+}
+.example-block {
+  background: #eee;
+  font-size: 20px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 10px 0;
+  text-align: center;
+}
+
+.grid-container {
+  padding-bottom: 20px;
+}
+
+
+
+div[class*="push-"] section {
+  background: #dec;
+}
+
+div[class*="pull-"] section {
+  background: #fcd;
+}
+
+.dynamic-px-width {
+  display: block;
+}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+    <script type="text/javascript" src="/socket.io/socket.io.js"> </script>
+    <script type="text/javascript">     
+     // var fps = 30;
+     var trail = new Array();   
+     var mycolor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+     var thedata= {x: 0, y: 0};
+     var objects = [];
+     var thecanvas;
+     var thecontext; 
+
+     var socket = io.connect();
+     socket.on('connect', function() {
+        socket.emit('newId', socket.id);
+        console.log("Connected");
+     });
+
+     socket.on('newId', function(id) {
+        var mobj = {
+            mouseX: thedata.x,
+            mouseY: thedata.y,
+            mcolor: mycolor,
+            mname: document.getElementById('message').value,
+            mid: id
+        }
+        objects.push(mobj);
+     });
+
+     socket.on('bone', function(bone) {
+
+     });
+
+     socket.on('user', function(data) {
+      	console.log(data);
+        // thecontext.fillStyle = "white";
+        // thecontext.globalAlpha = 0.6;
+        // thecontext.beginPath();   
+        // thecontext.rect(0,0,thecanvas.width,thecanvas.height);       
+        // thecontext.closePath(); 
+        // thecontext.fill( );
+
+        for (var i = 0; i < data.length; i++) {
+        trail.push([data[i].mouseX, data[i].mouseY]);
+        if(trail.length > 3){
+          trail.splice(0,1);
+        }
+        
+        var counter = 0;  
+        for(var z = 0; z < trail.length - 1; z += 1){          
+          counter += 5; 
+          thecontext.fillStyle = data[i].mcolor; 
+          thecontext.globalAlpha = 0.3;              
+          thecontext.beginPath();
+          thecontext.arc(trail[z][0], trail[z][1], counter, 0,2 * Math.PI);
+          thecontext.closePath();
+          thecontext.fill( );  
+        } 
+
+        // thecontext.beginPath(); 
+        // thecontext.fillStyle = "black";      
+        // thecontext.font = "30px Helvetica Neue";
+        // thecontext.textAlign = "center";
+        // thecontext.fillText(data[i].mname, data[i].mouseX, data[i].mouseY);    
+        // thecontext.fill( ); 
+        // thecontext.closePath();
+      }
+        
+     });
+
+
+      var sendmessage = function(message) {
+      };
+
+     // var mybody=document.getElementById('mybody');
+
+      function init( ) {
+        thecanvas = document.getElementById('thecanvas');
+        thecontext = thecanvas.getContext('2d');
+        loop();      
+        thecanvas.addEventListener('mousemove', 
+          function(evt) {       
+            thedata = {
+              x: evt.clientX,
+              y: evt.clientY
+            };  
+             console.log(evt.clientX);
+          });
+      }
+      
+
+      function loop(){ 
+         //setTimeout(function() { 
+         for (var i = 0; i < objects.length; i++) {
+            if (socket.id == objects[i].mid) {
+            objects[i].mouseX = thedata.x;
+            objects[i].mouseY = thedata.y;
+            objects[i].mname = document.getElementById('message').value;
+            }
+          }
+          socket.emit('user', objects);
+         // }, 1000 / fps);
+          requestAnimationFrame(loop);
+      }
+      window.addEventListener('load', init); 
+     
+    </script> 
+
+</head>
+
+ <body>
+    <div id='mybody'>
+     
+      <canvas id="thecanvas" width="480" height="270"> </canvas>
+      <input type="text" id="message" name="message">   
+      <input type="Submit" value="Submit" onclick="sendmessage(document.getElementById('message').value);">  
+    </div>
+ </body>
+
+</html>
