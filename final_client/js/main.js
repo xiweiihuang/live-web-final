@@ -29,8 +29,8 @@ function init() {
 
   scene = new THREE.Scene();
   video = document.getElementById( 'video' );
-  //
 
+  //
   image = document.createElement( 'canvas' );
   image.width = 480;
   image.height = 204;
@@ -39,18 +39,19 @@ function init() {
   imageContext.fillRect( 0, 0, 480, 204 );
   texture = new THREE.Texture( image );
   var material = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
+
   imageReflection = document.createElement( 'canvas' );
   imageReflection.width = 480;
   imageReflection.height = 204;
   imageReflectionContext = imageReflection.getContext( '2d' );
-  imageReflectionContext.fillStyle = '#000000';
+  imageReflectionContext.fillStyle = '#222222';
   imageReflectionContext.fillRect( 0, 0, 480, 204 );
   imageReflectionGradient = imageReflectionContext.createLinearGradient( 0, 0, 0, 204 );
   imageReflectionGradient.addColorStop( 0.2, 'rgba(240, 240, 240, 1)' );
   imageReflectionGradient.addColorStop( 1, 'rgba(240, 240, 240, 0.8)' );
-
   textureReflection = new THREE.Texture( imageReflection );
   var materialReflection = new THREE.MeshBasicMaterial( { map: textureReflection, side: THREE.BackSide, overdraw: 0.5 } );
+
   //
   var plane = new THREE.PlaneGeometry( 240, 104, 8, 8 );
   mesh = new THREE.Mesh( plane, material );

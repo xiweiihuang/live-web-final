@@ -25,14 +25,26 @@
 
 			a {
 				color: #00f;
-			}
+      }
 
+      #canvas0 {
+        display: none;
+      }
+
+      #canvas1 {
+        display: none;
+      }
 		</style>
 	</head>
 	<body>
 
 		<div id="container"></div>
 
+    <!-- canvas for 2D drawing -->
+    <canvas id="canvas0"></canvas>
+    <canvas id="canvas1"></canvas>
+
+	  <script  src="/socket.io/socket.io.js"> </script>
 		<script src="js/build/three.js"></script>
 		<script src="js/build/CombinedCamera.js"></script>
 		<script src="js/build/Mirror.js"></script>
@@ -61,6 +73,68 @@
 			var rightMirror, leftMirror, groundMirror;
 
 			var sphereGroup, smallSphere;
+
+      // canvas stuff
+      var canvas0, canvas1;
+      var canvasTexture0, canvasTexture1, canvasMaterial0, canvasMaterial1;
+
+
+				// var fps = 30;
+			var trail = new Array();
+			var mycolor = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+			var thedata= {x: 0, y: 0};
+			var objects = [];
+			var thecanvas;
+			var thecontext;
+
+			var socket = io.connect();
+			socket.on('connect', function() {
+				 socket.emit('newId', socket.id);
+				 console.log("Connected");
+			});
+
+			socket.on('newId', function(id) {
+				 var mobj = {
+						 mouseX: thedata.x,
+						 mouseY: thedata.y,
+						 mcolor: mycolor,
+						 mname: document.getElementById('message').value,
+						 mid: id
+				 }
+				 objects.push(mobj);
+			});
+
+			socket.on('bone', function(bone) {
+
+			});
+
+			socket.on('user', function(data) {
+				 console.log(data);
+
+				 for (var i = 0; i < data.length; i++) {
+				 trail.push([data[i].mouseX, data[i].mouseY]);
+				 if(trail.length > 3){
+					 trail.splice(0,1);
+				 }
+
+				 var counter = 0;
+				 for(var z = 0; z < trail.length - 1; z += 1){
+					 counter += 5;
+					 thecontext.fillStyle = data[i].mcolor;
+					 thecontext.globalAlpha = 0.3;
+					 thecontext.beginPath();
+					 thecontext.arc(trail[z][0], trail[z][1], counter, 0,2 * Math.PI);
+					 thecontext.closePath();
+					 thecontext.fill( );
+				 }
+
+			 }
+
+			});
+
+
+			 var sendmessage = function(message) {
+			 };
 
 			function init() {
 
@@ -101,6 +175,26 @@
 				container= document.createElement('div');
 				document.body.appendChild( container );
 				container.appendChild (renderer.domElement);
+
+        // init canvas stuff
+        canvas0 = document.getElementById('canvas0'),
+        canvas1 = document.getElementById('canvas1'),
+        canvas0.width = canvas0.height = 512;
+        canvas1.width = canvas1.height = 512;
+
+				// init drawing
+				thecanvas = document.getElementById('thecanvas');
+				thecontext = thecanvas.getContext('2d');
+				loop();
+				thecanvas.addEventListener('mousemove',
+				function(evt) {
+						thedata = {
+							x: evt.clientX,
+							y: evt.clientY
+						};
+						 console.log(evt.clientX);
+					});
+				}
 			}
 
 			function fillScene() {
@@ -156,13 +250,19 @@
 				smallSphere = new THREE.Mesh( geometry, material );
 				scene.add(smallSphere);
 
+
+        canvasTexture0 = new THREE.Texture( canvas0 );
+        canvasTexture1 = new THREE.Texture( canvas1 );
+        canvasMaterial0 = new THREE.MeshBasicMaterial({ map: canvasTexture0 });
+        canvasMaterial1 = new THREE.MeshBasicMaterial({ map: canvasTexture1 });
+
 				// walls
-				var planeLeft = new THREE.Mesh( planeGeo, new THREE.MeshPhongMaterial( { color: 0xffffff } ) );
+				var planeLeft = new THREE.Mesh( planeGeo, canvasMaterial0 );
 				planeLeft.position.z = -100;
 				planeLeft.position.y = 65;
 				scene.add( planeLeft );
 
-				var planeRight = new THREE.Mesh( planeGeo, new THREE.MeshPhongMaterial( { color: 0xffffff } ) );
+				var planeRight = new THREE.Mesh( planeGeo, canvasMaterial1 );
 				planeRight.position.x = -100;
 				planeRight.position.y = 65;
 				planeRight.rotateY( Math.PI / 2 );
@@ -186,6 +286,20 @@
 				scene.add( blueLight );
 
 			}
+
+
+      function loop(){
+         for (var i = 0; i < objects.length; i++) {
+            if (socket.id == objects[i].mid) {
+            objects[i].mouseX = thedata.x;
+            objects[i].mouseY = thedata.y;
+            objects[i].mname = document.getElementById('message').value;
+            }
+          }
+          socket.emit('user', objects);
+         // }, 1000 / fps);
+          requestAnimationFrame(loop);
+      }
 
 			function render() {
 
@@ -212,13 +326,30 @@
 					Math.abs( Math.cos( timer * 0.2 ) ) * 20 + 5,
 					Math.sin( timer * 0.1 ) * 30
 				);
+
 				smallSphere.rotation.y = ( Math.PI / 2 ) - timer * 0.1;
 				smallSphere.rotation.z = timer * 0.8;
 
 				cameraControls.update();
 
+        updateCanvas( canvas0, canvasTexture0 );
+        updateCanvas( canvas1, canvasTexture1 );
+
 				render();
 			}
+
+      function updateCanvas( canvas, texture ) {
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'red';
+
+        var t = new Date().getTime() * 0.1;
+        var x = t % 512, y = ( t + 100 ) % 512;
+        ctx.fillRect(x, y, 10, 10);
+
+        texture.needsUpdate = true;
+      }
 
 			function camUpdate(){
 
