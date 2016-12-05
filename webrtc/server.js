@@ -51,9 +51,9 @@ function handleIt(req, res) {
 var httpServer = http.createServer(options, handleIt);
 
 // Tell that server to listen on port 8081
-httpServer.listen(9000);
+httpServer.listen(8080);
 
-console.log('Server listening on port 9000');
+console.log('Server listening on port 8080');
 
 //////////////////////////
 

@@ -1,5 +1,6 @@
 <html>
 	<head>
+		<script src="peer.min.js"></script>
 		<script>
 			/* Get User Media */
 
@@ -26,14 +27,14 @@
 
 				peer.on('error', function(err) {
 				  console.log('err');
-				});		
+				});
 
-				// Get an ID from the PeerJS server		
+				// Get an ID from the PeerJS server
 				peer.on('open', function(id) {
 				  console.log('My peer ID is: ' + id);
 				  peer_id = id;
-				});		
-				
+				});
+
 				peer.on('call', function(incoming_call) {
 				console.log("Got a call!");
 				incoming_call.answer(my_stream); // Answer the call with our stream from getUserMedia
@@ -41,11 +42,11 @@
 					// And attach it to a video object
 				var ovideoElement = document.getElementById('video');
 				ovideoElement.src = window.URL.createObjectURL(remoteStream) || remoteStream;
-				ovideoElement.setAttribute("autoplay", "true");		
+				ovideoElement.setAttribute("autoplay", "true");
 				ovideoElement.play();
 				document.body.appendChild(ovideoElement);
 					});
-				});		
+				});
 
 
 				}, function(err) {
@@ -62,20 +63,20 @@
 			call.on('stream',function(remoteStream){
 				var ovideoElement = document.getElementById('video');
 				ovideoElement.src = window.URL.createObjectURL(remoteStream) || remoteStream;
-				ovideoElement.setAttribute("autoplay", "true");		
-				ovideoElement.play();	
+				ovideoElement.setAttribute("autoplay", "true");
+				ovideoElement.play();
 				document.body.appendChild(ovideoElement);
 				});
 
 		}
-		
+
 
 		</script>
 	</head>
 
 	<body>
 		<video id="myvideo" width="640" height ="480"></video>
-		<video id="othervivdeo" width ="640" height="480"></video> 
+		<video id="othervivdeo" width ="640" height="480"></video>
 		<input type="text" id="myid">
 		<input type="button" value="Set ID" onClick="setId();">
 

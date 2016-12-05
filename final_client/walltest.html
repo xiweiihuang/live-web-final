@@ -54,9 +54,12 @@
 
 			var camera, scene, renderer;
 
+			var rightProjector, leftProjector, upProjector;
+
 			var cameraControls;
 
 			var rightMirror, leftMirror, groundMirror;
+
 			var sphereGroup, smallSphere;
 
 			function init() {
@@ -79,16 +82,16 @@
 
 				// projectors
 				var rightProjector = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-				rightProjector.position.x = 10;
-				rightProjector.position.y = 10;
+				// rightProjector.position.x = 10;
+				// rightProjector.position.y = 10;
 
 				var leftProjector  = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-				leftProjector.position.x = 50;
-				leftProjector.position.y = 50;
+				// leftProjector.position.x = 50;
+				// leftProjector.position.y = 50;
 
 				var upProjector  = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-				upProjector.position.x = -50;
-				upProjector.position.y = -50;
+				// upProjector.position.x = -50;
+				// upProjector.position.y = -50;
 
 				var cameraCopy = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
 				cameraCopy.position.copy(camera.position);
@@ -96,9 +99,9 @@
 				camera.updateProjectionMatrix();
 				currCam = "cam1";
 
-				// rightProjector.position.set( 200, 100, 200 );
-				// leftProjector.position.set( 200, 100, 200 );
-				// upProjector.position.set( 200, 100, 200 );
+				rightProjector.position.set( 200, 100, 200 );
+				leftProjector.position.set( 200, 100, 200 );
+				upProjector.position.set( 200, 100, 200 );
 
 				cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
 				cameraControls.target.set( 0, 40, 0);
