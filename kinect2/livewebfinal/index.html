@@ -33,41 +33,22 @@
 			var Kinect2 = require('../lib/kinect2');
 			var kinect = new Kinect2();
  
-
-
 			var FACTOR = 400;
 			var SCREEN_WIDTH = window.innerWidth;
 			var SCREEN_HEIGHT = window.innerHeight;
 			var aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
-	
 			var frustumSize = 600;
-
 			var renderer, camera, scene, controls;
 			var activeCamera, activeHelper;
 			var cameraPerspectiveHelper, cameraPerspective;
 			var rootBone;
-			var faceColors = [
-				0xff0000,
-				0x00ff00,
-				0x0000ff,
-				0xffff00,
-				0x00ffff,
-				0xff00ff
-			];
+            var lighto = new THREE.PointLight( 0xfffffff, 4, 500 );
+ 			var light = new THREE.PointLight( 0xff0000, 2, 500 );
+            var light1 = new THREE.PointLight( 0x0f0000, 2, 1000 );
+            var light2 = new THREE.PointLight( 0x00ff00, 2, 1000 );
 
-             
- 				var light = new THREE.PointLight( 0xff0000, 2, 500 );
-	            var sphereSize = 10;
-	            var pointLightHelper = new THREE.PointLightHelper( light, sphereSize );
-	            //pointLightHelper.castShadow = true;
-
-                var light1 = new THREE.PointLight( 0x0f0000, 2, 1000 );
-                var light2 = new THREE.PointLight( 0x00ff00, 2, 1000 );
-                var light3 = new THREE.PointLight( 0x00f000, 2, 1000 );
-                var light4 = new THREE.PointLight( 0x0000ff, 2, 1000 );
-
-            init();
-			function init() {
+              init();
+			  function init() {
 
 
 				renderer = new THREE.WebGLRenderer( {
@@ -77,21 +58,13 @@
 
 
 				scene = new THREE.Scene();
-
 				camera = new THREE.PerspectiveCamera( 50, 0.5 * aspect, 1, 10000 );
 				camera.position.z = 2500;
-
 				cameraPerspective = new THREE.PerspectiveCamera( 50, 0.5 * aspect, 150, 1000 );
-
 				cameraPerspectiveHelper = new THREE.CameraHelper( cameraPerspective );
-				
-				// scene.add( cameraPerspectiveHelper );
-
 				activeCamera = cameraPerspective;
 				activeHelper = cameraPerspectiveHelper;
 				controls = new THREE.TrackballControls( camera, renderer.domElement );
-            
-
 				createGrid();
 				createBoneHierarchy();
 				createBoneAndChildren(rootBone);
@@ -110,7 +83,7 @@
 
 				
 				
-      }
+           }
 
 			function createBoneHierarchy() {
 				var lengthFromSpineBaseToSpineMid = FACTOR * 0.2;
@@ -129,13 +102,6 @@
 				var lengthFromHandToTip = FACTOR * 0.05;
 
 				rootBone = { index: Kinect2.JointType.spineBase, length: 1 };
-
-				console.log(Kinect2.JointType.spineBase);
-				console.log( Kinect2.JointType.spineMid);
-				console.log( Kinect2.JointType.neck);
-				console.log( Kinect2.JointType.head);
-				console.log( Kinect2.JointType.shoulderLeft);
-
 				var spineMidBone = { index: Kinect2.JointType.spineMid, length: 1 };
 				var neckBone = { index: Kinect2.JointType.neck, length: 1 };
 				var headBone = { index: Kinect2.JointType.head, length: 1 };
@@ -202,17 +168,15 @@
 			}
 
 			function createBoneAndChildren(bone) {
+				 lighto.position.x =0;
+				lighto.position.y =0;
+				lighto.position.z =300;
+                scene.add( lighto );
 				var geometry = new THREE.BoxGeometry( FACTOR / 10,bone.length, FACTOR / 10 );
 				geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, bone.length/2, 0 ) );
-				for(var i = 0; i < geometry.faces.length; i++) {
-					geometry.faces[i].color.setHex(faceColors[Math.floor(i / 2)]);
-				}
-
-				var material = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } )
-
-				var cube = new THREE.Mesh( geometry, material );
-
-				cube.castShadow = true;
+				var cube = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0x000000 } ) );
+				// cube.castShadow = true;
+				// cube.recieveShadow = true;
 				scene.add( cube );
 				bone.mesh = cube;
 				bone.mesh.matrixAutoUpdate = false;
@@ -224,18 +188,15 @@
 			}
 
 			var frameNr = 0;
-
 			function processBodyFrame(bodyFrame) {
 				var index = 0;
 				bodyFrame.bodies.forEach(function(body){
 					if(body.tracked) {
-						//traverse hierarchy
 						socket.emit('bone',body);
 						applyBoneTransformations(body, rootBone);
 					}
 				});
 			}
-
 
 			var geometry1 = new THREE.BoxGeometry( 200, 200, 40 );
 			var object = new THREE.Mesh( geometry1, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
@@ -244,9 +205,9 @@
 			var object2 = new THREE.Mesh( geometry2, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
 
 
-		var geometry = new THREE.BoxGeometry( 5000, 20, 5000 );
-		material = new THREE.MeshLambertMaterial();
-		var mesh = new THREE.Mesh( geometry, material );
+		    var geometry = new THREE.BoxGeometry( 5000, 20, 5000 );
+		    material = new THREE.MeshLambertMaterial();
+		    var mesh = new THREE.Mesh( geometry, material );
 
 			function applyBoneTransformations(body, bone) {
 				var joint = body.joints[bone.index];
@@ -275,18 +236,6 @@
 				light2.position.y =body.joints[8].cameraY * FACTOR;
 				light2.position.z =body.joints[8].cameraZ * FACTOR;
                 scene.add( light2 );
-
-
-                light3.position.x =body.joints[13].cameraX * FACTOR+00;
-				light3.position.y =body.joints[13].cameraY * FACTOR+100;
-				light3.position.z =body.joints[13].cameraZ * FACTOR;
-                scene.add( light3 );
-
-                light4.position.x =body.joints[16].cameraX * FACTOR+100;
-				light4.position.y =body.joints[16].cameraY * FACTOR;
-				light4.position.z =body.joints[16].cameraZ * FACTOR;
-                scene.add( light4 );
-
 
                 light.position.x =0;
 				light.position.y =0;

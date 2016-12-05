@@ -51,7 +51,7 @@ io.sockets.on('connection',
         });
 
 		socket.on('bone', function(bone) {
-			console.log(bone);
+			//console.log(bone);
 		     
 			io.sockets.emit('bone', bone);
 		});

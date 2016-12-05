@@ -43,6 +43,7 @@
     <!-- canvas for 2D drawing -->
     <canvas id="canvas0"></canvas>
     <canvas id="canvas1"></canvas>
+    <canvas id="thecanvas" width="480" height="270"> </canvas>
 
 	  <script  src="/socket.io/socket.io.js"> </script>
 		<script src="js/build/three.js"></script>
@@ -194,7 +195,7 @@
 						};
 						 console.log(evt.clientX);
 					});
-				}
+	
 			}
 
 			function fillScene() {
@@ -421,7 +422,9 @@
 			<br>
 		</div>
 
-		<div
+
+      <input type="text" id="message" name="message">   
+      <input type="Submit" value="Submit" onclick="sendmessage(document.getElementById('message').value);">  
 
 	</body>
 </html>
