@@ -39,8 +39,8 @@ function handleIt(req, res) {
 			res.writeHead(200);
 			res.end(fileContents);
   		}
-  	);	
-	
+  	);
+
 	// Send a log message to the console
 	console.log("Got a request " + req.url);
 }
@@ -51,9 +51,9 @@ function handleIt(req, res) {
 var httpServer = http.createServer(options, handleIt);
 
 // Tell that server to listen on port 8081
-httpServer.listen(8081);  
+httpServer.listen(9000);
 
-console.log('Server listening on port 8081');
+console.log('Server listening on port 9000');
 
 //////////////////////////
 
@@ -66,13 +66,13 @@ var io = require('socket.io').listen(httpServer);
 
 // Register a callback function to run when we have an individual connection
 // This is run for each individual user that connects
-io.sockets.on('connection', 
+io.sockets.on('connection',
 	// We are given a websocket object in our function
 	function (socket) {
-	
+
 
 		console.log("We have a new client: " + socket.id);
-		
+
 		socket.on('peerid', function(data) {
 			//io.sockets.emit("peerid", data);
 			socket.broadcast.emit('peerid', data);

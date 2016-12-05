@@ -32,8 +32,6 @@
 	<body>
 
 		<div id="container"></div>
-		<div id="info"><a href="http://threejs.org" target="_blank">three.js</a> - mirror
-		</div>
 
 		<script src="js/build/three.js"></script>
 		<script src="js/build/CombinedCamera.js"></script>
@@ -61,20 +59,6 @@
 			var rightMirror, leftMirror, groundMirror;
 			var sphereGroup, smallSphere;
 
-			function setOrthographic() {
-
-				camera.toOrthographic();
-				document.getElementById('fov').innerHTML = 'Orthographic mode' ;
-
-			}
-
-			function setPerspective() {
-
-				camera.toPerspective();
-				document.getElementById('fov').innerHTML = 'Perspective mode' ;
-
-			}
-
 			function init() {
 				container= document.createElement('div');
 				document.body.appendChild( container );
@@ -87,15 +71,30 @@
 				// scene
 				scene = new THREE.Scene();
 
+
 				// camera
-				// camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-				camera = new THREE.CombinedCamera( window.innerWidth / 2, window.innerHeight / 2, 30, 1, 1000, -500, 1000 );
+				camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+				// camera = new THREE.CombinedCamera( window.innerWidth / 2, window.innerHeight / 2, 30, 1, 1000, -500, 1000 );
 				camera.position.set( 200, 100, 200 );
 
-				//projectors
-				// var rightProjector = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-				// var leftProjector  = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-				// var upProjector  = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+				// projectors
+				var rightProjector = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+				rightProjector.position.x = 10;
+				rightProjector.position.y = 10;
+
+				var leftProjector  = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+				leftProjector.position.x = 50;
+				leftProjector.position.y = 50;
+
+				var upProjector  = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+				upProjector.position.x = -50;
+				upProjector.position.y = -50;
+
+				var cameraCopy = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+				cameraCopy.position.copy(camera.position);
+				cameraCopy.rotation.copy(camera.position);
+				camera.updateProjectionMatrix();
+				currCam = "cam1";
 
 				// rightProjector.position.set( 200, 100, 200 );
 				// leftProjector.position.set( 200, 100, 200 );
@@ -228,6 +227,63 @@
 				render();
 			}
 
+			function camUpdate(){
+
+			if(currCam == "rightProjector")
+			{
+				rightProjector.position.copy(camera.position);
+				rightProjector.rotation.copy(camera.rotation);
+
+			} else if (currCam == "leftProjector"){
+
+				leftProjector.position.copy(camera.position);
+				leftProjector.rotation.copy(camera.rotation);
+
+			}
+			else {
+
+			 upProjector.position.copy(camera.position);
+			 upProjector.rotation.copy(camera.rotation);
+
+		 }
+		}
+
+
+		function setPro1() {
+
+			camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR );
+			camera.position.copy(rightProjector.position);
+			camera.rotation.copy(rightProjector.rotation);
+			camera.updateProjectionMatrix();
+			controls = new THREE.OrbitControls(camera);
+
+			currCam = "rightProjector";
+
+		}
+
+		function setPro2() {
+
+			camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR );
+			camera.position.copy(leftProjector.position);
+			camera.rotation.copy(leftProjector.rotation);
+			camera.updateProjectionMatrix();
+			controls = new THREE.OrbitControls(camera);
+
+			currCam = "leftProjector";
+
+		}
+
+		function setPro3() {
+
+			camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR );
+			camera.position.copy(upProjector.position);
+			camera.rotation.copy(upProjector.rotation);
+			camera.updateProjectionMatrix();
+			controls = new THREE.OrbitControls(camera);
+
+			currCam = "upProjector";
+
+		}
 			init();
 			fillScene();
 			update();
@@ -235,16 +291,10 @@
 		</script>
 
 		<div style="position: absolute; top: 10px; width: 100%; text-align: center; ">
-			<br/>
-			Views: <a href="#" onclick="camera.toTopView();lookAtScene=false;return false;">Top view</a> |
-				<a href="#" onclick="camera.toBottomView();lookAtScene=false;return false;">Bottom view</a> |
-				<a href="#" onclick="camera.toLeftView();lookAtScene=false;return false;">Left view</a> |
-				<a href="#" onclick="camera.toRightView();lookAtScene=false;return false;">Right view</a> |
-				<a href="#" onclick="camera.toFrontView();lookAtScene=false;return false;">Front view</a> |
-				<a href="#" onclick="camera.toBackView();lookAtScene=false;return false;">Back view</a> |
-				<a href="#" onclick="lookAtScene=true;return false;">Look at Scene</a>
-				<br/>
-			<div id="fov"></div>
+			<a href="#" onclick="setPro1();return false;"> Camera 1</a> |
+			<a href="#" onclick="setPro2();return false;"> Camera 2</a> |
+			<a href="#" onclick="setPro3();return false;"> Camera 3</a>
+			<br>
 		</div>
 
 	</body>
