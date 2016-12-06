@@ -46,8 +46,8 @@
     <canvas id="canvas0"></canvas>
     <canvas id="canvas1"></canvas>
 
-	  <script  src="/socket.io/socket.io.js"> </script>
-		<!-- <script src="js/build/socket.io.js"></script> -->
+	  <!-- <script  src="/socket.io/socket.io.js"> </script> -->
+		<script src="js/build/socket.io.js"></script>
 		<script src="js/build/three.js"></script>
 		<script src="js/build/CombinedCamera.js"></script>
 		<script src="js/build/Mirror.js"></script>
@@ -243,16 +243,16 @@
 				rightMirror = new THREE.Mirror( renderer, camera, { clipBias: 0.003, textureWidth: WIDTH, textureHeight: HEIGHT, color:0x777777 } );
 				leftMirror = new THREE.Mirror( renderer, camera, { clipBias: 0.003, textureWidth: WIDTH, textureHeight: HEIGHT, color:0x777777 } );
 
-				var rightMirrorMesh = new THREE.Mesh( new THREE.PlaneGeometry( 200,130 ), rightMirror.material );
+				var rightMirrorMesh = new THREE.Mesh( planeGeo, rightMirror.material );
 				rightMirrorMesh.add( rightMirror );
-				rightMirrorMesh.position.y = 0;
+				rightMirrorMesh.position.y = 65;
 				rightMirrorMesh.position.z = -99;
 				scene.add( rightMirrorMesh );
 
-				var leftMirrorMesh = new THREE.Mesh( new THREE.PlaneGeometry(200,130 ), leftMirror.material );
+				var leftMirrorMesh = new THREE.Mesh( planeGeo, leftMirror.material );
 				leftMirrorMesh.add( leftMirror );
 				leftMirrorMesh.position.x = -99;
-				leftMirrorMesh.position.y = 0;
+				leftMirrorMesh.position.y = 65;
 				leftMirrorMesh.rotateY(  Math.PI / 2 );
 				scene.add( leftMirrorMesh );
 
